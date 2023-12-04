@@ -30,8 +30,8 @@ const reviewSchema = new mpngoose.Schema({
 });
 
 reviewSchema.pre(/^find/, function (next) {
-  this.populate({ path: 'user', select: '-__v -passwordChangedAt' });
-  this.populate({ path: 'tour', select: '-__v -passwordChangedAt' });
+  this.populate({ path: 'user', select: '_id name' });
+  // this.populate({ path: 'tour', select: '-__v -passwordChangedAt' });
 
   next();
 });
