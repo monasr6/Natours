@@ -23,16 +23,7 @@ const signToken = (id, res) => {
 
   return token;
 };
-const getToken = (req) => {
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    // console.log('token found');
-    return req.headers.authorization.split(' ')[1];
-  }
-  return undefined;
-};
+
 exports.signup = catchAsync(async (req, res, next) => {
   // const newUser = await User.create(req.body); // this is not secure because it allows to create a new user with admin rights
   if (
@@ -48,6 +39,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
+    role: req.body.role || 'user',
   }); // this is secure because it allows to create a new user without admin rights
   const token = signToken(newUser._id, res);
 
@@ -84,9 +76,9 @@ exports.login = catchAsync(async (req, res, next) => {
 
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) Getting token and check if it's there
-  const token = getToken(req);
+  // get token from header
+  const token = req.headers.authorization.split(' ')[1];
 
-  // console.log(token);
   if (!token || token === 'null') {
     return next(
       new AppError('You are not logged in! Please log in to get access', 401),
@@ -171,3 +163,23 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
     message: 'updated password successfully',
   });
 });
+
+exports.restrictTo =
+  (...roles) =>
+  (req, res, next) => {
+    // roles ['admin','lead-guide']
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError('you do not have permission to perform this action', 403),
+      );
+    }
+    next();
+  };
+
+exports.logout = (req, res) => {
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+  res.status(200).json({ status: 'success', message: 'logged out' });
+};

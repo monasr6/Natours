@@ -1,40 +1,23 @@
-const catchAsync = require('../utils/catchAsync');
+// const catchAsync = require('../utils/catchAsync');
 const Review = require('../models/review');
+const factory = require('./factoryHandler');
 
-exports.getAllReviews = catchAsync(async (req, res, next) => {
-  const reviews = await Review.find();
-  res.status(200).json({
-    status: 'success',
-    count: reviews.length,
-    reviews,
-  });
-});
+exports.checkTourId = (req, res, next) => {
+  next();
+};
 
-exports.createReview = catchAsync(async (req, res, next) => {
-  const review = Review.create(req.body);
-  res.status(201).json({
-    status: 'success',
-    review,
-  });
-});
+exports.getAllReviews = factory.getAll(Review);
 
-exports.updateReview = catchAsync(async (req, res, next) => {
-  res.status(500).json({
-    status: 'fail',
-    message: "didn't implement yet",
-  });
-});
+exports.setTourUserIds = (req, res, next) => {
+  if (!req.body.tour) req.body.tour = req.params.TourId;
+  if (!req.body.user) req.body.user = req.user.id;
+  next();
+};
 
-exports.deleteReview = catchAsync(async (req, res, next) => {
-  res.status(500).json({
-    status: 'fail',
-    message: "didn't implement yet",
-  });
-});
+exports.createReview = factory.createOne(Review);
 
-exports.getreview = catchAsync(async (req, res, next) => {
-  res.status(500).json({
-    status: 'fail',
-    message: "didn't implement yet",
-  });
-});
+exports.updateReview = factory.updateOne(Review);
+
+exports.deleteReview = factory.deleteOne(Review);
+
+exports.getreview = factory.getOne(Review, { path: 'tour', select: 'name' });

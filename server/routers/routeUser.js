@@ -7,18 +7,27 @@ const router = express.Router();
 
 router.route('/signup').post(authController.signup);
 router.route('/login').post(authController.login);
+router.route('/logout').post(authController.logout);
 
 router.route('/forgotpassword').post(authController.forgetPassword);
 //router.route('/resetpassword/:token').patch(authController.resetPassword);
-router
-  .route('/updatePassword')
-  .patch(authController.protect, authController.updatePassword);
+router.route('/updatePassword').patch(authController.updatePassword);
 
 // Create a checkBody middleware
+router.use(authController.protect);
+
 router
   .route('/')
   .get(userController.getAllUsers)
   .post(userController.createUser);
+
+router
+  .route('/me')
+  .get(userController.getMe, userController.getUser)
+  .patch(userController.updateMe)
+  .delete(userController.deleteMe);
+
+router.use(authController.restrictTo('admin'));
 
 router
   .route('/:id')

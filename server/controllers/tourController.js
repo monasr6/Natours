@@ -1,7 +1,6 @@
 const Tour = require('../models/Tour');
 const Filtering = require('../utils/filterQuerystring');
-const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
+const factory = require('./factoryHandler');
 
 exports.getAllTours = async (req, res, next) => {
   // make a copy of req.query
@@ -21,53 +20,10 @@ exports.getAllTours = async (req, res, next) => {
   });
 };
 
-exports.getTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findOne({ _id: req.params.id }).populate({
-    path: 'reviews',
-    select: '-__v -passwordChangedAt',
-  });
-  if (!tour) {
-    return new AppError('No tour found with that ID', 404);
-  }
-  res.status(200).json({
-    status: 'success',
-    data: tour,
-  });
-});
+exports.getTour = factory.getOne(Tour, { path: 'reviews' });
 
-exports.createTour = catchAsync(async (req, res, next) => {
-  const newtour = await Tour.create(req.body);
-  res.status(201).json({
-    status: 'success',
-    data: {
-      tour: newtour,
-    },
-  });
-});
+exports.createTour = factory.createOne(Tour);
 
-exports.updateTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  if (!tour) {
-    return new AppError('No tour found with that ID', 404);
-  }
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour,
-    },
-  });
-});
+exports.updateTour = factory.updateOne(Tour);
 
-exports.deleteTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndDelete(req.params.id);
-  if (!tour) {
-    return new AppError('No tour found with that ID', 404);
-  }
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
-});
+exports.deleteTour = factory.deleteOne(Tour);
