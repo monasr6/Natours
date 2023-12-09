@@ -23,7 +23,7 @@ const errorProd = (err, req, res, next) => {
         message: err.message,
       });
     }
-    console.error('ERROR 💥', err);
+    // console.error('ERROR 💥', err);
     return res.status(500).json({
       me: 'Here from error handler controller',
       status: 'error',
@@ -37,7 +37,7 @@ const errorProd = (err, req, res, next) => {
       msg: err.message,
     });
   }
-  console.error('ERROR 💥', err);
+  // console.error('ERROR 💥', err);
   return res.status(err.statusCode).render('error', {
     me: 'Here from error handler controller',
     title: 'Something went wrong',
