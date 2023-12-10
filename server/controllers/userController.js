@@ -19,16 +19,21 @@ exports.createUser = (req, res, next) => {
 };
 
 exports.updateMe = (req, res, next) => {
-  res.status(400).json({
-    status: 'error',
-    message: 'This route is not yet defined',
-  });
-};
+  const { name, email } = req.body;
+  const { id } = req.user;
 
-exports.deleteMe = (req, res, next) => {
-  res.status(400).json({
-    status: 'error',
-    message: 'This route is not yet defined',
+  if (!name || !email) {
+    return res.status(400).json({
+      status: 'error',
+      message: 'Please provide name and email',
+    });
+  }
+  const user = User.findByIdAndUpdate(id, { name, email }, { new: true });
+  res.status(200).json({
+    status: 'success',
+    data: {
+      user,
+    },
   });
 };
 
