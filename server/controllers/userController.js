@@ -19,22 +19,15 @@ exports.createUser = (req, res, next) => {
 };
 
 exports.updateMe = (req, res, next) => {
-  const { name, email } = req.body;
-  const { id } = req.user;
+  req.params.id = req.user.id;
 
-  if (!name || !email) {
-    return res.status(400).json({
-      status: 'error',
-      message: 'Please provide name and email',
-    });
-  }
-  const user = User.findByIdAndUpdate(id, { name, email }, { new: true });
-  res.status(200).json({
-    status: 'success',
-    data: {
-      user,
-    },
-  });
+  req.body = {
+    name: req.body.name,
+    email: req.body.email,
+  };
+  // console.log(req.body);
+  // const user = factory.updateOne(User);
+  next();
 };
 
 exports.getMe = (req, res, next) => {

@@ -42,6 +42,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     role: req.body.role || 'user',
   }); // this is secure because it allows to create a new user without admin rights
   const token = signToken(newUser._id, res);
+  newUser.password = undefined;
 
   res.status(201).json({
     status: 'success',
@@ -77,6 +78,15 @@ exports.login = catchAsync(async (req, res, next) => {
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) Getting token and check if it's there
   // get token from header
+  if (
+    !req.headers.authorization ||
+    !req.headers.authorization.startsWith('Bearer')
+  ) {
+    return next(
+      new AppError('You are not logged in! Please log in to get access', 401),
+    );
+  }
+
   const token = req.headers.authorization.split(' ')[1];
 
   if (!token || token === 'null') {
