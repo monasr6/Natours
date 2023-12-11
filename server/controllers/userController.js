@@ -1,5 +1,4 @@
 const multer = require('multer');
-const sharp = require('sharp');
 
 const factory = require('./factoryHandler');
 const User = require('../models/User');
@@ -18,7 +17,6 @@ const User = require('../models/User');
 const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req, file, cb) => {
-  // console.log(file);
   if (file.mimetype.startsWith('image')) {
     cb(null, true);
   } else {
@@ -38,13 +36,7 @@ exports.resizeUserPhoto = (req, res, next) => {
   if (!req.file) return next();
   req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
 
-  sharp(req.file.buffer)
-    .resize(500, 500)
-    .toFormat('jpeg')
-    .jpeg({
-      quality: 90,
-    })
-    .toFile(`../client/public/img/users/${req.file.filename}`);
+  factory.resizeImage(req.file, 'users', req.file.filename, 500, 500);
 
   next();
 };

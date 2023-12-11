@@ -1,3 +1,5 @@
+const sharp = require('sharp');
+
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const Filtering = require('../utils/filterQuerystring');
@@ -22,6 +24,18 @@ exports.createOne = (Model) =>
       doc,
     });
   });
+
+exports.resizeImage = catchAsync(
+  async (image, folder, filename, hight, width) => {
+    await sharp(image.buffer)
+      .resize(hight, width)
+      .toFormat('jpeg')
+      .jpeg({
+        quality: 90,
+      })
+      .toFile(`../client/public/img/${folder}/${filename}`);
+  },
+);
 
 exports.updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
