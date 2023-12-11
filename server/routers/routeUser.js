@@ -26,6 +26,7 @@ router
   .get(userController.getMe, userController.getUser)
   .patch(
     userController.uploadUserPhoto,
+    userController.resizeUserPhoto,
     userController.updateMe,
     userController.updateUser,
   )
