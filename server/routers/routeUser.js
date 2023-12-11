@@ -24,7 +24,11 @@ router
 router
   .route('/me')
   .get(userController.getMe, userController.getUser)
-  .patch(userController.updateMe, userController.updateUser)
+  .patch(
+    userController.uploadUserPhoto,
+    userController.updateMe,
+    userController.updateUser,
+  )
   .delete(userController.getMe, userController.deleteUser);
 
 router.use(authController.restrictTo('admin'));
