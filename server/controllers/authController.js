@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 
+const Email = require('../utils/email');
 const User = require('../models/User');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
@@ -43,6 +44,9 @@ exports.signup = catchAsync(async (req, res, next) => {
   }); // this is secure because it allows to create a new user without admin rights
   const token = signToken(newUser._id, res);
   newUser.password = undefined;
+
+  const url = `${req.get('host')}/me`;
+  await Promise.all(await new Email(newUser, url).sendWelcome());
 
   res.status(201).json({
     status: 'success',
