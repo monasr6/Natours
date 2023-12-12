@@ -2,6 +2,7 @@ const multer = require('multer');
 
 const factory = require('./factoryHandler');
 const User = require('../models/User');
+const catchAsync = require('../utils/catchAsync');
 
 // const multerStorage = multer.diskStorage({
 //   destination: (req, file, cb) => {
@@ -31,15 +32,15 @@ const upload = multer({
 
 exports.uploadUserPhoto = upload.single('photo');
 
-exports.resizeUserPhoto = (req, res, next) => {
+exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   // console.log(req.file);
   if (!req.file) return next();
   req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
 
-  factory.resizeImage(req.file, 'users', req.file.filename, 500, 500);
+  await factory.resizeImage(req.file, 'users', req.file.filename, 500, 500);
 
   next();
-};
+});
 
 exports.getAllUsers = factory.getAll(User);
 

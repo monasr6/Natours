@@ -4,6 +4,7 @@ const AppError = require('../utils/appError');
 const Tour = require('../models/Tour');
 const Filtering = require('../utils/filterQuerystring');
 const factory = require('./factoryHandler');
+const catchAsync = require('../utils/catchAsync');
 
 exports.getAllTours = async (req, res, next) => {
   // make a copy of req.query
@@ -43,7 +44,7 @@ exports.uploadTourImages = upload.fields([
   { name: 'images', maxCount: 3 },
 ]);
 
-exports.updateImageCover = async (req, res, next) => {
+exports.updateImageCover = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.id);
   if (!tour) {
     return next(new AppError('No tour found with that ID', 404));
@@ -55,7 +56,7 @@ exports.updateImageCover = async (req, res, next) => {
 
   req.body.imageCover = `tour-${req.params.id}-${Date.now()}.jpeg`;
 
-  factory.resizeImage(
+  await factory.resizeImage(
     req.files.imageCover[0],
     'tours',
     req.body.imageCover,
@@ -64,16 +65,16 @@ exports.updateImageCover = async (req, res, next) => {
   );
 
   req.body.images = [];
-  Promise.all(
-    req.fields.images.map(async (image) => {
-      const filename = `tour-${req.params.id}-${Date.now()}.jpeg`;
-      factory.resizeImage(image, 'tours', filename, 2000, 1333);
+  await Promise.all(
+    req.fields.images.map(async (image, i) => {
+      const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
+      await factory.resizeImage(image, 'tours', filename, 2000, 1333);
       req.body.images.push(filename);
     }),
   );
 
   next();
-};
+});
 
 exports.getTour = factory.getOne(Tour, { path: 'reviews' });
 
