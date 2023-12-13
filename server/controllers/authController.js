@@ -46,7 +46,8 @@ exports.signup = catchAsync(async (req, res, next) => {
   newUser.password = undefined;
 
   const url = `${req.get('host')}/me`;
-  await Promise.all(await new Email(newUser, url).sendWelcome());
+
+  await new Email(newUser, url).sendWelcome();
 
   res.status(201).json({
     status: 'success',

@@ -10,7 +10,7 @@
   "rules": {
     "prettier/prettier": "error",
     "spaced-comment": "off",
-    "no-console": "warn",
+    "no-console": "off",
     "consistent-return": "off",
     "func-names": "off",
     "object-shorthand": "off",
@@ -19,12 +19,17 @@
     "no-return-await": "off",
     "no-underscore-dangle": "off",
     "class-methods-use-this": "off",
+    "linebreak-style": [
+      "error",
+      "windows"
+    ],
     "prefer-destructuring": [
       "error",
       {
         "object": true,
         "array": false
       }
+      // or "crlf" for Windows-style line endings
     ],
     "no-unused-vars": [
       "error",
