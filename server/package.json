@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
-    "prod": "set NODE_ENV=production&& nodemon server.js",
+    "wprod": "set NODE_ENV=production&& nodemon server.js",
+    "lprod":"NODE_ENV=production nodemon server.js",
     "debug": "ndb server.js",
     "indextest": "node test.js"
   },
