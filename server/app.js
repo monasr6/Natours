@@ -5,6 +5,7 @@ const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
 const expressMongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
+const compression = require('compression');
 
 const tourRouter = require('./routers/routeTour');
 const userRouter = require('./routers/routeUser');
@@ -25,6 +26,8 @@ const limiter = rateLimit({
 });
 
 app.use('/api', limiter);
+
+app.use(compression());
 
 app.use(express.json());
 
