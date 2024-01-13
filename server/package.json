@@ -5,15 +5,16 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js",
-    "wprod": "set NODE_ENV=production&& nodemon server.js",
-    "lprod": "NODE_ENV=production nodemon server.js",
-    "debug": "ndb server.js",
-    "indextest": "node test.js"
+    "start": "nodemon src/server.js",
+    "wprod": "set NODE_ENV=production&& nodemon src/server.js",
+    "lprod": "NODE_ENV=production nodemon src/server.js",
+    "debug": "ndb src/server.js",
+    "indextest": "node src/test.js"
   },
   "author": "monasr",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.6.5",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
     "dotenv": "^16.3.1",

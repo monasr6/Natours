@@ -9,9 +9,7 @@ const app = require('./app');
 
 const connectToDB = async () => {
   try {
-    await mongoose.connect(process.env.DATABASE, {
-      useNewUrlParser: true,
-    });
+    await mongoose.connect(process.env.DATABASE);
     console.log('DB connection successful!');
   } catch (err) {
     console.log(err);
